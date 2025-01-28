@@ -1,7 +1,9 @@
 const express = require('express');
 const createError = require('http-errors');
 const morgan = require('morgan');
+const cors = require('cors');
 const connectDB = require('./config/db');
+const courseRoutes=require('./routes/course.routes')
 require('dotenv').config();
 
 const app = express();
@@ -13,8 +15,9 @@ app.use(morgan('dev'));
 app.get('/', async (req, res, next) => {
   res.send({ message: 'Awesome it works 🐻' });
 });
-
-app.use('/api', require('./routes/api.route'));
+app.use(cors());
+// app.use('/api', require('./routes/api.route'));
+app.use('/course', courseRoutes);
 
 // Middleware for handling 404 errors
 app.use((req, res, next) => {
