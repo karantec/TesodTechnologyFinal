@@ -3,7 +3,7 @@ const createError = require('http-errors');
 const morgan = require('morgan');
 const cors = require('cors');
 const connectDB = require('./config/db');
-const UserRoutes=require('./routes/user.routes')
+
 const ResumeRoutes=require('./routes/Resume.Routes');
 const ProductRoutes=require('./routes/Products.routes');
 
@@ -23,8 +23,6 @@ app.get('/', async (req, res, next) => {
 });
 
 app.use(cors({ origin: "http://localhost:3000" }));
-
-app.use('/auth', UserRoutes);
 
 app.use('/job',Job);
 app.use('/product',ProductRoutes);
