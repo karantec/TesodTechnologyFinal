@@ -38,68 +38,69 @@ const getAllProducts = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+const getProductById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findById(id);
 
-// **Get Single Blog Post by ID**
-// const getBlogById = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const blog = await Blog.findById(id);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
 
-//     if (!blog) {
-//       return res.status(404).json({ message: "Blog post not found" });
-//     }
+    res.status(200).json(product);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
 
-//     res.status(200).json(blog);
-//   } catch (error) {
-//     console.error("Error:", error);
-//     res.status(500).json({ message: "Server error", error: error.message });
-//   }
-// };
+// **Update Product**
+const updateProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, category, image, description } = req.body;
 
-// **Update Blog Post with Image Upload**
-// const updateBlog = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const { title, content, tags, isPublished, image } = req.body;
-//     let imageUrl = '';
+    let imageUrl = "";
 
-//     if (image) {
-//       const result = await cloudinary.uploader.upload(image, { folder: "blogs" });
-//       imageUrl = result.secure_url; 
-//     }
+    // Upload new image if provided
+    if (image) {
+      const result = await cloudinary.uploader.upload(image, { folder: "products" });
+      imageUrl = result.secure_url;
+    }
 
-//     const updatedBlog = await Blog.findByIdAndUpdate(
-//       id,
-//       { title, content, tags, isPublished, image: imageUrl, updatedAt: Date.now() },
-//       { new: true }
-//     );
+    const updatedProduct = await Product.findByIdAndUpdate(
+      id,
+      { name, category, image: imageUrl, description, updatedAt: Date.now() },
+      { new: true }
+    );
 
-//     if (!updatedBlog) {
-//       return res.status(404).json({ message: "Blog post not found" });
-//     }
+    if (!updatedProduct) {
+      return res.status(404).json({ message: "Product not found" });
+    }
 
-//     res.status(200).json({ message: "Blog post updated successfully", updatedBlog });
-//   } catch (error) {
-//     console.error("Error:", error);
-//     res.status(500).json({ message: "Server error", error: error.message });
-//   }
-// };
+    res.status(200).json({ message: "Product updated successfully", product: updatedProduct });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
 
-// **Delete a Blog Post**
-// const deleteBlog = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const deletedBlog = await Blog.findByIdAndDelete(id);
+// **Delete a Product**
+const deleteProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedProduct = await Product.findByIdAndDelete(id);
 
-//     if (!deletedBlog) {
-//       return res.status(404).json({ message: "Blog post not found" });
-//     }
+    if (!deletedProduct) {
+      return res.status(404).json({ message: "Product not found" });
+    }
 
-//     res.status(200).json({ message: "Blog post deleted successfully" });
-//   } catch (error) {
-//     console.error("Error:", error);
-//     res.status(500).json({ message: "Server error", error: error.message });
-//   }
-// };
+    res.status(200).json({ message: "Product deleted successfully" });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
 
-module.exports = { createProduct, getAllProducts };
+
+module.exports = { createProduct, getAllProducts,getProductById, updateProduct, deleteProduct };
