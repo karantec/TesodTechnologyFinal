@@ -4,13 +4,12 @@ const morgan = require('morgan');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const UserRoutes=require('./routes/user.routes')
-const GoldRoutes=require('./routes/product.routes');
-const homePageRoutes=require('./routes/Home.routes');
-const OrderRoutes=require('./routes/Order.routes');
-const addressRoutes = require('./routes/address.routes'); 
-const CategoryRoutes=require('./routes/Category.routes');
-const blogRoutes=require('./routes/blog.routes');
-const AboutRoutes=require('./routes/About.routes');
+const ResumeRoutes=require('./routes/Resume.Routes');
+const ProductRoutes=require('./routes/Products.routes');
+
+const Job=require('./routes/Job.routes');
+const TestimonialRoutes=require('./routes/Testimonial.routes')
+const TeamRoutes=require('./routes/Team.routes')
 require('dotenv').config();
 
 const app = express();
@@ -24,15 +23,14 @@ app.get('/', async (req, res, next) => {
 });
 
 app.use(cors({ origin: "http://localhost:3000" }));
-// app.use('/api', require('./routes/api.route'));
+
 app.use('/auth', UserRoutes);
-app.use('/gold',GoldRoutes);
-app.use("/home", homePageRoutes);
-app.use('/order',OrderRoutes); 
-app.use('/address', addressRoutes);
-app.use('/blog',blogRoutes)
-app.use('/category', CategoryRoutes);
-app.use('/about',AboutRoutes)
+
+app.use('/job',Job);
+app.use('/product',ProductRoutes);
+app.use('/testimonial', TestimonialRoutes);
+app.use('/teams',TeamRoutes)
+app.use('/resume',ResumeRoutes)
 // Middleware for handling 404 errors
 app.use((req, res, next) => {
   next(createError.NotFound());
