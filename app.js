@@ -6,7 +6,7 @@ const connectDB = require('./config/db');
 
 const ResumeRoutes=require('./routes/Resume.Routes');
 const ProductRoutes=require('./routes/Products.routes');
-
+const authenticationRoutes=require('./routes/User.routes');
 const Job=require('./routes/Job.routes');
 const TestimonialRoutes=require('./routes/Testimonial.routes')
 const TeamRoutes=require('./routes/Team.routes')
@@ -23,7 +23,7 @@ app.get('/', async (req, res, next) => {
 });
 
 app.use(cors({ origin: "http://localhost:3000" }));
-
+app.use('/auth',authenticationRoutes)
 app.use('/job',Job);
 app.use('/product',ProductRoutes);
 app.use('/testimonial', TestimonialRoutes);
