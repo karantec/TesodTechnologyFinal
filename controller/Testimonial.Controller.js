@@ -1,105 +1,104 @@
 const { cloudinary } = require("../config/cloudinary");
 const Testimonial = require("../models/Testimonial.model");
 
-// **Create a New Blog Post with Image Upload**
+// **Create a New Testimonial**
 const createTestimonial = async (req, res) => {
   try {
     const { name, position, organization, photo, message } = req.body;
 
-    // Check if a team member with the same name & position already exists
+    // Check if a testimonial with the same name exists
     const existingMember = await Testimonial.findOne({ name });
 
     if (existingMember) {
       return res.status(400).json({ message: "Testimonial member already exists" });
     }
 
-    // Create new team member
+    // Create new testimonial
     const newTestimonial = new Testimonial({ name, position, organization, photo, message });
     await newTestimonial.save();
 
-    res.status(201).json({ message: "Testimonial member created successfully", Testimonial: newTestimonial });
+    res.status(201).json({ message: "Testimonial created successfully", testimonial: newTestimonial });
   } catch (error) {
-    console.error("Error in createTeam:", error);
+    console.error("Error in createTestimonial:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
+// **Get All Testimonials**
 const getAllTestimonial = async (req, res) => {
   try {
-    const Test = await Testimonial.find();
+    const testimonials = await Testimonial.find();
 
-    if (!Test.length) {
-      return res.status(404).json({ message: "No Test posts found" });
+    if (!testimonials.length) {
+      return res.status(404).json({ message: "No testimonials found" });
     }
 
-    res.status(200).json(Test);
+    res.status(200).json(testimonials);
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-// **Get Single Blog Post by ID**
-// const getBlogById = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const blog = await Blog.findById(id);
+// **Get Single Testimonial by ID**
+const getTestimonialById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const testimonial = await Testimonial.findById(id);
 
-//     if (!blog) {
-//       return res.status(404).json({ message: "Blog post not found" });
-//     }
+    if (!testimonial) {
+      return res.status(404).json({ message: "Testimonial not found" });
+    }
 
-//     res.status(200).json(blog);
-//   } catch (error) {
-//     console.error("Error:", error);
-//     res.status(500).json({ message: "Server error", error: error.message });
-//   }
-// };
+    res.status(200).json(testimonial);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
 
-// **Update Blog Post with Image Upload**
-// const updateBlog = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const { title, content, tags, isPublished, image } = req.body;
-//     let imageUrl = '';
+// **Update Testimonial**
+const updateTestimonial = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, position, organization, photo, message } = req.body;
 
-//     if (image) {
-//       const result = await cloudinary.uploader.upload(image, { folder: "blogs" });
-//       imageUrl = result.secure_url; 
-//     }
+    let updatedData = { name, position, organization, message };
 
-//     const updatedBlog = await Blog.findByIdAndUpdate(
-//       id,
-//       { title, content, tags, isPublished, image: imageUrl, updatedAt: Date.now() },
-//       { new: true }
-//     );
+    // Handle image upload if a new image is provided
+    if (photo) {
+      const result = await cloudinary.uploader.upload(photo, { folder: "testimonials" });
+      updatedData.photo = result.secure_url;
+    }
 
-//     if (!updatedBlog) {
-//       return res.status(404).json({ message: "Blog post not found" });
-//     }
+    const updatedTestimonial = await Testimonial.findByIdAndUpdate(id, updatedData, { new: true });
 
-//     res.status(200).json({ message: "Blog post updated successfully", updatedBlog });
-//   } catch (error) {
-//     console.error("Error:", error);
-//     res.status(500).json({ message: "Server error", error: error.message });
-//   }
-// };
+    if (!updatedTestimonial) {
+      return res.status(404).json({ message: "Testimonial not found" });
+    }
 
-// **Delete a Blog Post**
-// const deleteBlog = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const deletedBlog = await Blog.findByIdAndDelete(id);
+    res.status(200).json({ message: "Testimonial updated successfully", updatedTestimonial });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
 
-//     if (!deletedBlog) {
-//       return res.status(404).json({ message: "Blog post not found" });
-//     }
+// **Delete Testimonial**
+const deleteTestimonial = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedTestimonial = await Testimonial.findByIdAndDelete(id);
 
-//     res.status(200).json({ message: "Blog post deleted successfully" });
-//   } catch (error) {
-//     console.error("Error:", error);
-//     res.status(500).json({ message: "Server error", error: error.message });
-//   }
-// };
+    if (!deletedTestimonial) {
+      return res.status(404).json({ message: "Testimonial not found" });
+    }
 
-module.exports = { createTestimonial, getAllTestimonial};
+    res.status(200).json({ message: "Testimonial deleted successfully" });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+module.exports = { createTestimonial, getAllTestimonial, getTestimonialById, updateTestimonial, deleteTestimonial };

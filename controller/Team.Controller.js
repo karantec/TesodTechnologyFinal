@@ -40,66 +40,79 @@ const getAllTeams = async (req, res) => {
 };
 
 // **Get Single Blog Post by ID**
-// const getBlogById = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const blog = await Blog.findById(id);
+const getTeamById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const TeamMembers = await TeamMember.findById(id);
 
-//     if (!blog) {
-//       return res.status(404).json({ message: "Blog post not found" });
-//     }
+    if (!TeamMembers) {
+      return res.status(404).json({ message: "TeamMember not found" });
+    }
 
-//     res.status(200).json(blog);
-//   } catch (error) {
-//     console.error("Error:", error);
-//     res.status(500).json({ message: "Server error", error: error.message });
-//   }
-// };
+    res.status(200).json(TeamMembers);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
 
 // **Update Blog Post with Image Upload**
-// const updateBlog = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const { title, content, tags, isPublished, image } = req.body;
-//     let imageUrl = '';
+const updateTeam = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, position, photo, category } = req.body;
+    
+    let imageUrl = photo; // Default to existing photo
 
-//     if (image) {
-//       const result = await cloudinary.uploader.upload(image, { folder: "blogs" });
-//       imageUrl = result.secure_url; 
-//     }
+    if (photo) {
+      const result = await cloudinary.uploader.upload(photo, { folder: "blogs" });
+      imageUrl = result.secure_url; 
+    }
 
-//     const updatedBlog = await Blog.findByIdAndUpdate(
-//       id,
-//       { title, content, tags, isPublished, image: imageUrl, updatedAt: Date.now() },
-//       { new: true }
-//     );
+    const updatedBlog = await TeamMember.findByIdAndUpdate(
+      id,
+      { name, position, category, photo: imageUrl, updatedAt: Date.now() },
+      { new: true }
+    );
 
-//     if (!updatedBlog) {
-//       return res.status(404).json({ message: "Blog post not found" });
-//     }
+    if (!updatedBlog) {
+      return res.status(404).json({ message: "Blog post not found" });
+    }
 
-//     res.status(200).json({ message: "Blog post updated successfully", updatedBlog });
-//   } catch (error) {
-//     console.error("Error:", error);
-//     res.status(500).json({ message: "Server error", error: error.message });
-//   }
-// };
+    res.status(200).json({ message: "Blog post updated successfully", updatedBlog });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
 
 // **Delete a Blog Post**
-// const deleteBlog = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const deletedBlog = await Blog.findByIdAndDelete(id);
+const deleteTeam = async (req, res) => {
+  try {
+    const { id } = req.params;
 
-//     if (!deletedBlog) {
-//       return res.status(404).json({ message: "Blog post not found" });
-//     }
+    // Find the team member first
+    const teamMember = await TeamMember.findById(id);
+    if (!teamMember) {
+      return res.status(404).json({ message: "Team member not found" });
+    }
 
-//     res.status(200).json({ message: "Blog post deleted successfully" });
-//   } catch (error) {
-//     console.error("Error:", error);
-//     res.status(500).json({ message: "Server error", error: error.message });
-//   }
-// };
+    // Delete associated photo from Cloudinary if it exists
+    if (teamMember.photo) {
+      const publicId = teamMember.photo.split("/").pop().split(".")[0]; // Extract public ID
+      await cloudinary.uploader.destroy(`blogs/${publicId}`);
+    }
 
-module.exports = { createTeam, getAllTeams };
+    // Delete the team member
+    await TeamMember.findByIdAndDelete(id);
+
+    res.status(200).json({ message: "Team member deleted successfully" });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+
+module.exports = { createTeam, getAllTeams,getTeamById, updateTeam,deleteTeam};
