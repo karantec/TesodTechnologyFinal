@@ -21,13 +21,7 @@ app.use(morgan('dev'));
 app.get('/', async (req, res, next) => {
   res.send({ message: 'Awesome it works 🐻' });
 });
-app.use(cors({
-  origin: ["http://localhost:3000", "https://frame-digital-dashboard.vercel.app/"], // Add your frontend URL for production
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true // Important for cookies, tokens, or authentication headers
-}));
-
+app.use(cors());
 app.use('/auth',authenticationRoutes)
 app.use('/job',Job);
 app.use('/product',ProductRoutes);
