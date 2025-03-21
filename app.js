@@ -13,7 +13,7 @@ const TeamRoutes=require('./routes/Team.routes')
 const AboutRoutes=require('./routes/About.routes');
 const ContactRoutes=require('./routes/Contact.routes');
 const BrandRoutes=require('./routes/Partnership.routes');
-require('dotenv').config();
+const ServiceRoutes=require('./routes/Service.routes');
 
 const app = express();
 app.use(express.json());
@@ -30,6 +30,7 @@ app.use('/job',Job);
 app.use('/about',AboutRoutes);
 app.use('/contact', ContactRoutes);
 app.use('/product',ProductRoutes);
+app.use('/services',ServiceRoutes);
 app.use('/Brand',BrandRoutes);
 app.use('/testimonial', TestimonialRoutes);
 app.use('/teams',TeamRoutes)
