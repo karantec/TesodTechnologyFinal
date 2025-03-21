@@ -10,6 +10,9 @@ const authenticationRoutes=require('./routes/User.routes');
 const Job=require('./routes/Job.routes');
 const TestimonialRoutes=require('./routes/Testimonial.routes')
 const TeamRoutes=require('./routes/Team.routes')
+const AboutRoutes=require('./routes/About.routes');
+const ContactRoutes=require('./routes/Contact.routes');
+const BrandRoutes=require('./routes/Partnership.routes');
 require('dotenv').config();
 
 const app = express();
@@ -24,7 +27,10 @@ app.get('/', async (req, res, next) => {
 app.use(cors());
 app.use('/auth',authenticationRoutes)
 app.use('/job',Job);
+app.use('/about',AboutRoutes);
+app.use('/contact', ContactRoutes);
 app.use('/product',ProductRoutes);
+app.use('/Brand',BrandRoutes);
 app.use('/testimonial', TestimonialRoutes);
 app.use('/teams',TeamRoutes)
 app.use('/resume',ResumeRoutes)
