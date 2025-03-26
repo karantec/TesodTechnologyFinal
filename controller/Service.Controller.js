@@ -4,7 +4,7 @@ const Service = require("../models/Service.model");
 // **Create a New Service with Image Upload**
 const createService = async (req, res) => {
     try {
-        const { title, description, image, category } = req.body;
+        const { title, description, image, } = req.body;
 
         // Check if the service with the same title already exists
         const existingService = await Service.findOne({ title });
@@ -21,7 +21,7 @@ const createService = async (req, res) => {
             title, 
             description, 
            image,
-            category 
+            
         });
 
         await newService.save();
@@ -53,7 +53,7 @@ const getAllServices = async (req, res) => {
 const updateService = async (req, res) => {
     try {
         const { id } = req.params;
-        const { title, description, image, category } = req.body;
+        const { title, description, image,  } = req.body;
 
         let imageUrl = image;
 

@@ -14,10 +14,7 @@ const serviceSchema = new mongoose.Schema({
         required: true
     },
     
-    category: {
-        type: String,
-        required: false
-    }
+   
 }, { timestamps: true });
 
 module.exports = mongoose.model('Service', serviceSchema);
