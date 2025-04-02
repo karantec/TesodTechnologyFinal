@@ -4,6 +4,9 @@ const morgan = require('morgan');
 const cors = require('cors');
 const connectDB = require('./config/db');
 
+const GalleryRoutes = require('./routes/Gallery.routes');
+const BlogRoutes = require('./routes/Blog.routes');
+const CallbackRoutes = require('./routes/Callback.routes');
 const ResumeRoutes=require('./routes/Resume.Routes');
 const ProductRoutes=require('./routes/Products.routes');
 const authenticationRoutes=require('./routes/User.routes');
@@ -14,6 +17,7 @@ const AboutRoutes=require('./routes/About.routes');
 const ContactRoutes=require('./routes/Contact.routes');
 const BrandRoutes=require('./routes/Partnership.routes');
 const ServiceRoutes=require('./routes/Service.routes');
+
 
 const app = express();
 app.use(express.json());
@@ -35,6 +39,9 @@ app.use('/Brand',BrandRoutes);
 app.use('/testimonial', TestimonialRoutes);
 app.use('/teams',TeamRoutes)
 app.use('/resume',ResumeRoutes)
+app.use('/gallery', GalleryRoutes); // Gallery routes
+app.use('/blog', BlogRoutes); // Blog routes
+app.use('/callback', CallbackRoutes); // Callback routes
 // Middleware for handling 404 errors
 app.use((req, res, next) => {
   next(createError.NotFound());
