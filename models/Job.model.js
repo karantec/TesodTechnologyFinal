@@ -7,7 +7,7 @@ const jobSchema = new mongoose.Schema({
   },
   employmentType: {
     type: String,
-    enum: ["Remote", "Onsite", "Hybrid"],
+    enum: ["Remote", "Onsite", "Hybrid","internship"],
     required: true
   },
   keySkills: {

@@ -1,25 +1,26 @@
 const mongoose = require("mongoose");
 
 const ContactSchema = new mongoose.Schema({
-  name: {
+  firstName: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
+  },
+  lastName: {
+    type: String,
+    required: true,
+    trim: true,
   },
   email: {
     type: String,
     required: true,
     trim: true,
-    match: [/^\S+@\S+\.\S+$/, 'Please enter a valid email address']
+    match: [/^\S+@\S+\.\S+$/, 'Please enter a valid email address'],
   },
-  projectDetails: {
+  message: {
     type: String,
-    required: false,
-    maxlength: 1000
-  },
-  attachment: {
-    type: String, // URL to the uploaded file (e.g., Cloudinary link)
-   
+    required: true,
+    maxlength: 1000,
   },
 }, { timestamps: true });
 

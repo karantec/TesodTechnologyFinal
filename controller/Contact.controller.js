@@ -1,13 +1,12 @@
-const { cloudinary } = require("../config/cloudinary");
 const Contact = require("../models/Contact.model");
 
-// **Create a New Contact Section with File Upload**
+// **Create a New Contact Section**
 const createContact = async (req, res) => {
     try {
-        const { name, email, projectDetails,attachment } = req.body;
-        
+        const { firstName, lastName, email, message } = req.body;
+
         // Create new Contact entry
-        const newContact = new Contact({ name, email, projectDetails, attachment });
+        const newContact = new Contact({ firstName, lastName, email, message });
         await newContact.save();
 
         res.status(201).json({ message: "Contact created successfully", contact: newContact });
@@ -37,11 +36,11 @@ const getAllContacts = async (req, res) => {
 const updateContact = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, email, projectDetails, attachment } = req.body;
+        const { firstName, lastName, email, message } = req.body;
 
         const updatedContact = await Contact.findByIdAndUpdate(
             id,
-            { name, email, projectDetails, attachment },
+            { firstName, lastName, email, message },
             { new: true }
         );
 
