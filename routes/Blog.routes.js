@@ -1,15 +1,11 @@
-const express = require('express');
-
-const { upload } = require('../config/cloudinary'); 
-const { createBlog, getAllBlogs } = require('../controller/Blog.Controller');
-
+const express = require("express");
 const router = express.Router();
-const cpUpload = upload.fields([
-    { name: 'image', maxCount: 6 }
-]);
-
-// **Routes**
-router.post('/createBlog', cpUpload, createBlog);
-router.get('/blogs', getAllBlogs);
+const {createBlog, getAllBlogs, getBlogById, updateBlog, deleteBlog} = require("../controller/Blog.Controller");
+// Routes for Blog
+router.post("/create", createBlog); // Create a new blog post
+router.get("/get", getAllBlogs); // Get all blog posts
+router.get("/:id", getBlogById); // Get a single blog post by ID
+router.put("/:id", updateBlog); // Update a blog post
+router.delete("/:id", deleteBlog); // Delete a blog post
 
 module.exports = router;

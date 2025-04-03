@@ -12,9 +12,11 @@ const ResumeRoutes=require('./routes/Resume.Routes');
 const ProductRoutes=require('./routes/Products.routes');
 const authenticationRoutes=require('./routes/User.routes');
 const Job=require('./routes/Job.routes');
+const fileUpload = require("express-fileupload");
 const TestimonialRoutes=require('./routes/Testimonial.routes')
 const TeamRoutes=require('./routes/Team.routes')
 const AboutRoutes=require('./routes/About.routes');
+const FileRoutes=require('./routes/File.routes');
 const ContactRoutes=require('./routes/Contact.routes');
 const BrandRoutes=require('./routes/Partnership.routes');
 const ServiceRoutes=require('./routes/Service.routes');
@@ -23,6 +25,10 @@ const ServiceRoutes=require('./routes/Service.routes');
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(fileUpload({
+  useTempFiles: true,
+  tempFileDir: "/tmp/"
+}));
 app.use(morgan('dev'));
 
 // Example route
@@ -37,9 +43,11 @@ app.use('/contact', ContactRoutes);
 app.use('/product',ProductRoutes);
 app.use('/services',ServiceRoutes);
 app.use('/Brand',BrandRoutes);
+
 app.use('/testimonial', TestimonialRoutes);
 app.use('/teams',TeamRoutes)
 app.use('/resume',ResumeRoutes)
+// app.use('/file',FileRoutes);
 app.use('/gallery', GalleryRoutes); // Gallery routes
 app.use('/blog', BlogRoutes); // Blog routes
 app.use('/callback', CallbackRoutes); // Callback routes

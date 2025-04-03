@@ -39,69 +39,68 @@ const getAllProducts = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
-// const getProductById = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const product = await Product.findById(id);
+const getGalleryById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const gallery = await Gallery.findById(id);
 
-//     if (!product) {
-//       return res.status(404).json({ message: "Product not found" });
-//     }
+    if (!gallery) {
+      return res.status(404).json({ message: "Gallery post not found" });
+    }
 
-//     res.status(200).json(product);
-//   } catch (error) {
-//     console.error("Error:", error);
-//     res.status(500).json({ message: "Server error", error: error.message });
-//   }
-// };
+    res.status(200).json(gallery);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
 
-// **Update Product**
-// const updateProduct = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const { name, category, image, description } = req.body;
+// **Update Gallery Post**
+const updateGallery = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, image, description } = req.body;
 
-//     let imageUrl = "";
+    let imageUrl = image;
 
-//     // Upload new image if provided
-//     if (image) {
-//       const result = await cloudinary.uploader.upload(image, { folder: "products" });
-//       imageUrl = result.secure_url;
-//     }
+    // Upload new image if provided
+    if (image) {
+      const result = await cloudinary.uploader.upload(image, { folder: "gallery" });
+      imageUrl = result.secure_url;
+    }
 
-//     const updatedProduct = await Product.findByIdAndUpdate(
-//       id,
-//       { name, category, image: imageUrl, description, updatedAt: Date.now() },
-//       { new: true }
-//     );
+    const updatedGallery = await Gallery.findByIdAndUpdate(
+      id,
+      { title, image: imageUrl, description, updatedAt: Date.now() },
+      { new: true }
+    );
 
-//     if (!updatedProduct) {
-//       return res.status(404).json({ message: "Product not found" });
-//     }
+    if (!updatedGallery) {
+      return res.status(404).json({ message: "Gallery post not found" });
+    }
 
-//     res.status(200).json({ message: "Product updated successfully", product: updatedProduct });
-//   } catch (error) {
-//     console.error("Error:", error);
-//     res.status(500).json({ message: "Server error", error: error.message });
-//   }
-// };
+    res.status(200).json({ message: "Gallery post updated successfully", gallery: updatedGallery });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
 
-// // **Delete a Product**
-// const deleteProduct = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const deletedProduct = await Product.findByIdAndDelete(id);
+// **Delete a Gallery Post**
+const deleteGallery = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedGallery = await Gallery.findByIdAndDelete(id);
 
-//     if (!deletedProduct) {
-//       return res.status(404).json({ message: "Product not found" });
-//     }
+    if (!deletedGallery) {
+      return res.status(404).json({ message: "Gallery post not found" });
+    }
 
-//     res.status(200).json({ message: "Product deleted successfully" });
-//   } catch (error) {
-//     console.error("Error:", error);
-//     res.status(500).json({ message: "Server error", error: error.message });
-//   }
-// };
+    res.status(200).json({ message: "Gallery post deleted successfully" });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
 
-
-module.exports = { createGallery, getAllProducts};
+module.exports = { createGallery, getAllProducts, getGalleryById, updateGallery, deleteGallery };
