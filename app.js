@@ -7,6 +7,7 @@ const connectDB = require('./config/db');
 const GalleryRoutes = require('./routes/Gallery.routes');
 const BlogRoutes = require('./routes/Blog.routes');
 const CallbackRoutes = require('./routes/Callback.routes');
+const InternshipRoutes = require('./routes/Internship.routes');
 const ResumeRoutes=require('./routes/Resume.Routes');
 const ProductRoutes=require('./routes/Products.routes');
 const authenticationRoutes=require('./routes/User.routes');
@@ -42,6 +43,7 @@ app.use('/resume',ResumeRoutes)
 app.use('/gallery', GalleryRoutes); // Gallery routes
 app.use('/blog', BlogRoutes); // Blog routes
 app.use('/callback', CallbackRoutes); // Callback routes
+app.use('/internship', InternshipRoutes); // Internship routes
 // Middleware for handling 404 errors
 app.use((req, res, next) => {
   next(createError.NotFound());
