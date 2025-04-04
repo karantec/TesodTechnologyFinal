@@ -16,7 +16,7 @@ const fileUpload = require("express-fileupload");
 const TestimonialRoutes=require('./routes/Testimonial.routes')
 const TeamRoutes=require('./routes/Team.routes')
 const AboutRoutes=require('./routes/About.routes');
-const FileRoutes=require('./routes/File.routes');
+
 const ContactRoutes=require('./routes/Contact.routes');
 const BrandRoutes=require('./routes/Partnership.routes');
 const ServiceRoutes=require('./routes/Service.routes');
