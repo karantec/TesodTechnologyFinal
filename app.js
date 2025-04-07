@@ -23,12 +23,11 @@ const ServiceRoutes=require('./routes/Service.routes');
 
 
 const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(fileUpload({
-  useTempFiles: true,
-  tempFileDir: "/tmp/"
-}));
+
+// app.use(fileUpload({
+//   useTempFiles: true,
+//   tempFileDir: "/tmp/"
+// }));
 app.use(morgan('dev'));
 
 // Example route
@@ -56,6 +55,8 @@ app.use('/internship', InternshipRoutes); // Internship routes
 app.use((req, res, next) => {
   next(createError.NotFound());
 });
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Error handling middleware
 app.use((err, req, res, next) => {
