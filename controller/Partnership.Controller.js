@@ -2,7 +2,7 @@ const { cloudinary } = require("../config/cloudinary");
 const Brand = require("../models/Partnership.models");
 
 // **Create a New Product with Image Upload**
-const createProduct = async (req, res) => {
+const createPartnerhsip = async (req, res) => {
   try {
     const { name, logoUrl } = req.body;
 
@@ -25,7 +25,7 @@ const createProduct = async (req, res) => {
 };
 
 // **Get All Products**
-const getAllProducts = async (req, res) => {
+const getAllPartnership = async (req, res) => {
   try {
     const products = await Brand.find();
 
@@ -41,7 +41,7 @@ const getAllProducts = async (req, res) => {
 };
 
 // **Get Product by ID**
-const getProductById = async (req, res) => {
+const getPartnershipById = async (req, res) => {
   try {
     const { id } = req.params;
     const product = await Brand.findById(id);
@@ -58,7 +58,7 @@ const getProductById = async (req, res) => {
 };
 
 // **Update Product**
-const updateProduct = async (req, res) => {
+const updatePartnership = async (req, res) => {
     try {
       const { id } = req.params;
       const { name, logoUrl } = req.body;
@@ -90,7 +90,7 @@ const updateProduct = async (req, res) => {
   
 
 // **Delete a Product**
-const deleteProduct = async (req, res) => {
+const deletePartnership = async (req, res) => {
   try {
     const { id } = req.params;
     const deletedProduct = await Brand.findByIdAndDelete(id);
@@ -106,4 +106,4 @@ const deleteProduct = async (req, res) => {
   }
 };
 
-module.exports = { createProduct, getAllProducts, getProductById, updateProduct, deleteProduct };
+module.exports = { createPartnerhsip, getAllPartnership , getPartnershipById, updatePartnership, deletePartnership };

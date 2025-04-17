@@ -1,171 +1,95 @@
 
-const Product = require("../models/Product.model");
+const Product = require("../models/Product.model"); // Make sure to import your model
 
-
-const createProduct = async (req, res) => {
+const createProducts = async (req, res) => {
   try {
-    const { name, category, description } = req.body;
-    const image = req.files?.image?.[0]?.path;
-    const file = req.files?.file?.[0]?.path;
+    const { name, image, description, category } = req.body;
 
-    if (!image || !file) {
-      return res.status(400).json({ message: "Image or File missing" });
+    // Optional: Check if a blog with the same name already exists
+    const existingBlog = await Product.findOne({ name });
+    if (existingBlog) {
+      return res.status(400).json({ message: "Blog post with this name already exists" });
     }
 
-    const newProduct = new Product({
-      name,
-      category,
-      description,
-      image,
-      file
-    });
+    // Create new blog
+    const newBlog = new Product({ name, image, description, category });
+    await newBlog.save();
 
-    await newProduct.save();
-
-    res.status(201).json({ message: "Product created successfully", product: newProduct });
+    res.status(201).json({ message: "Blog post created successfully", blog: newBlog });
   } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({ message: "Server Error", error: error.message });
+    console.error("Error in createBlog:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
+
+// **Get All Blog Posts**
 const getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find();
-    if (!products.length) {
-      return res.status(404).json({ message: "No products found" });
+    const blogs = await Product.find();
+    if (!blogs.length) {
+      return res.status(404).json({ message: "No blog posts found" });
     }
-    res.status(200).json(products);
+    res.status(200).json(blogs);
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-
-const getProductById = async (req, res) => {
+// **Get a Single Blog Post by ID**
+const getProductByIds = async (req, res) => {
   try {
     const { id } = req.params;
-    const product = await Product.findById(id);
-    if (!product) {
-      return res.status(404).json({ message: "Product not found" });
+    const blog = await Product.findById(id);
+    if (!blog) {
+      return res.status(404).json({ message: "Blog post not found" });
     }
-    res.status(200).json(product);
+    res.status(200).json(blog);
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-
-// // Download HTML file from Cloudinary
-const downloadProductFile = async (req, res) => {
+// **Update a Blog Post**
+const updateProducts = async (req, res) => {
   try {
     const { id } = req.params;
-    const product = await Product.findById(id);
-    if (!product || !product.file) {
-      return res.status(404).json({ message: "HTML file not found for this product" });
+    const { name, image, description, category } = req.body;
+
+    const updatedBlog = await Product.findByIdAndUpdate(
+      id,
+      { name, image, description, category },
+      { new: true }
+    );
+
+    if (!updatedBlog) {
+      return res.status(404).json({ message: "Blog post not found" });
     }
 
-    const response = await axios({
-      method: 'get',
-      url: product.file,
-      responseType: 'stream',
-    });
-
-    res.setHeader('Content-Disposition', `attachment; filename="${product.name.replace(/\s+/g, '_')}.html"`);
-    res.setHeader('Content-Type', 'text/html');
-    response.data.pipe(res);
+    res.status(200).json({ message: "Blog post updated successfully", blog: updatedBlog });
   } catch (error) {
-    console.error("Error in downloadProductFile:", error);
+    console.error("Error in updateBlog:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-// Get only downloadable products (those with a file)
-const getDownloadableProducts = async (req, res) => {
-  try {
-    const products = await Product.find({ file: { $exists: true, $ne: "" } })
-      .select("name category image description");
-    if (!products.length) {
-      return res.status(404).json({ message: "No downloadable products found" });
-    }
-    res.status(200).json(products);
-  } catch (error) {
-    console.error("Error in getDownloadableProducts:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
-  }
-};
-
-// Update a product and re-upload files if needed
-const updateProduct = async (req, res) => {
+// **Delete a Blog Post**
+const deleteProducts = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, category, description } = req.body;
+    const deletedBlog = await Product.findByIdAndDelete(id);
 
-    let imageUrl = "";
-    let fileUrl = "";
-
-    if (req.files?.image?.[0]) {
-      const result = await cloudinary.uploader.upload(req.files.image[0].path, {
-        folder: "products/images",
-      });
-      imageUrl = result.secure_url;
-      fs.unlinkSync(req.files.image[0].path);
+    if (!deletedBlog) {
+      return res.status(404).json({ message: "Blog post not found" });
     }
 
-    if (req.files?.file?.[0]) {
-      const fileResult = await cloudinary.uploader.upload(req.files.file[0].path, {
-        folder: "products/files",
-        resource_type: "raw",
-      });
-      fileUrl = fileResult.secure_url;
-      fs.unlinkSync(req.files.file[0].path);
-    }
-
-    const updatedFields = {
-      name,
-      category,
-      description,
-      ...(imageUrl && { image: imageUrl }),
-      ...(fileUrl && { file: fileUrl }),
-      updatedAt: Date.now(),
-    };
-
-    const updatedProduct = await Product.findByIdAndUpdate(id, updatedFields, { new: true });
-
-    if (!updatedProduct) {
-      return res.status(404).json({ message: "Product not found" });
-    }
-
-    res.status(200).json({ message: "Product updated successfully", product: updatedProduct });
-  } catch (error) {
-    console.error("Error in updateProduct:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
-  }
-};
-
-// Delete a product
-const deleteProduct = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const deletedProduct = await Product.findByIdAndDelete(id);
-    if (!deletedProduct) {
-      return res.status(404).json({ message: "Product not found" });
-    }
-    res.status(200).json({ message: "Product deleted successfully" });
+    res.status(200).json({ message: "Blog post deleted successfully" });
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-module.exports = {
-  createProduct,
-  getAllProducts,
-  getProductById,
-  getDownloadableProducts,
-  downloadProductFile,
-  updateProduct,
-  deleteProduct,
-};
+module.exports = { createProducts, getAllProducts, getProductByIds, updateProducts, deleteProducts };

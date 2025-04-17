@@ -1,20 +1,21 @@
 const express = require('express');
-const { createProduct, getAllProducts, getProductById, updateProduct, deleteProduct } = require('../controller/Partnership.Controller');
+const { createPartnerhsip, getAllPartnership, updatePartnership, deletePartnership, getPartnershipById } = require('../controller/Partnership.Controller');
+
 const router = express.Router();
 
 // Create a new product
-router.post('/createBrand', createProduct);
+router.post('/createBrand', createPartnerhsip);
 
 // Get all products
-router.get('/', getAllProducts);
+router.get('/', getAllPartnership);
 
 // Get product by ID
-router.get('/:id', getProductById);
+router.get('/:id', getPartnershipById);
 
 // Update product by ID
-router.put('/update/:id', updateProduct);
+router.put('/update/:id', updatePartnership);
 
 // Delete product by ID
-router.delete('/delete/:id', deleteProduct);
+router.delete('/delete/:id', deletePartnership);
 
 module.exports = router;
