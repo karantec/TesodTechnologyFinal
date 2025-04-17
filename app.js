@@ -16,6 +16,7 @@ const JobRoutes = require('./routes/Job.routes');
 const TestimonialRoutes = require('./routes/Testimonial.routes');
 const TeamRoutes = require('./routes/Team.routes');
 const AboutRoutes = require('./routes/About.routes');
+const CrouselRoutes=require('./routes/Crousel.routes')
 const ContactRoutes = require('./routes/Contact.routes');
 const BrandRoutes = require('./routes/Partnership.routes');
 const ServiceRoutes = require('./routes/Service.routes');
@@ -48,6 +49,7 @@ app.use('/gallery', GalleryRoutes);
 app.use('/blog', BlogRoutes);
 app.use('/callback', CallbackRoutes);
 app.use('/internship', InternshipRoutes);
+app.use('/crousel',CrouselRoutes)
 
 // 404 Handler
 app.use((req, res, next) => {
