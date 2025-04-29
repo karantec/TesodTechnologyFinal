@@ -1,19 +1,25 @@
-const express = require('express');
-
-const { upload } = require('../config/cloudinary'); 
-const { createGallery, getAllProducts, getGalleryById, updateGallery, deleteGallery } = require('../controller/Gallery.Controller');
-
-
+const express = require("express");
 const router = express.Router();
-const cpUpload = upload.fields([
-    { name: 'images', maxCount: 5 }
-  ]);
-// **Routes**
-router.post('/creatGallery', cpUpload,createGallery);
-router.get('/Gallery', getAllProducts);
-router.get("/:id", getGalleryById); 
-router.put("/:id", updateGallery);
-router.delete("/:id", deleteGallery);
+const {
+  createGallery,
+  getAllGalleryItems,
+  getGalleryById,
+  updateGallery,
+  deleteGallery,
+} = require("../controller/Gallery.Controller");
+// Create a new gallery item
+router.post("/", createGallery);
 
+// Get all gallery items
+router.get("/", getAllGalleryItems);
+
+// Get a gallery item by ID
+router.get("/:id", getGalleryById);
+
+// Update a gallery item
+router.put("/:id", updateGallery);
+
+// Delete a gallery item
+router.delete("/:id", deleteGallery);
 
 module.exports = router;
