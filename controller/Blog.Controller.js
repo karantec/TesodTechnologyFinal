@@ -2,17 +2,21 @@ const Blog = require("../models/Blog.model");
 // **Create a New Blog Post**
 const createBlog = async (req, res) => {
   try {
-    const { title, image, description, author } = req.body;
+    const { title, image, description } = req.body;
 
     const existingBlog = await Blog.findOne({ title });
     if (existingBlog) {
-      return res.status(400).json({ message: "Blog post with this title already exists" });
+      return res
+        .status(400)
+        .json({ message: "Blog post with this title already exists" });
     }
 
-    const newBlog = new Blog({ title, image, description, author });
+    const newBlog = new Blog({ title, image, description });
     await newBlog.save();
 
-    res.status(201).json({ message: "Blog post created successfully", blog: newBlog });
+    res
+      .status(201)
+      .json({ message: "Blog post created successfully", blog: newBlog });
   } catch (error) {
     console.error("Error in createBlog:", error);
     res.status(500).json({ message: "Server error", error: error.message });
@@ -64,7 +68,9 @@ const updateBlog = async (req, res) => {
       return res.status(404).json({ message: "Blog post not found" });
     }
 
-    res.status(200).json({ message: "Blog post updated successfully", blog: updatedBlog });
+    res
+      .status(200)
+      .json({ message: "Blog post updated successfully", blog: updatedBlog });
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ message: "Server error", error: error.message });
@@ -88,4 +94,10 @@ const deleteBlog = async (req, res) => {
   }
 };
 
-module.exports = { createBlog, getAllBlogs, getBlogById, updateBlog, deleteBlog };
+module.exports = {
+  createBlog,
+  getAllBlogs,
+  getBlogById,
+  updateBlog,
+  deleteBlog,
+};
