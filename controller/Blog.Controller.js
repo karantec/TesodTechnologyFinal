@@ -56,11 +56,11 @@ const getBlogById = async (req, res) => {
 const updateBlog = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, image, description, author } = req.body;
+    const { title, image, description } = req.body;
 
     const updatedBlog = await Blog.findByIdAndUpdate(
       id,
-      { title, image, description, author },
+      { title, image, description },
       { new: true }
     );
 
