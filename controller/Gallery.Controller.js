@@ -1,16 +1,33 @@
 const { cloudinary } = require("../config/cloudinary");
 const Gallery = require("../models/Gallery.model");
 
+// Allowed categories
+const allowedCategories = [
+  "Apps",
+  "Website",
+  "Softwares",
+  "Logo",
+  "Google ads",
+  "InstaAds",
+  "Facebook ads",
+  "Seo",
+  "Other digital marketing services",
+];
+
 // Create a new gallery item
 const createGallery = async (req, res) => {
   try {
-    const { image } = req.body;
+    const { image, category } = req.body;
 
     if (!image) {
       return res.status(400).json({ message: "Image is required" });
     }
 
-    // Upload image to cloudinary
+    if (!category || !allowedCategories.includes(category)) {
+      return res.status(400).json({ message: "Invalid or missing category" });
+    }
+
+    // Upload image to Cloudinary
     let imageUrl = image;
     if (image.startsWith("data:")) {
       const result = await cloudinary.uploader.upload(image, {
@@ -20,7 +37,7 @@ const createGallery = async (req, res) => {
     }
 
     // Create new gallery item
-    const newGalleryItem = new Gallery({ image: imageUrl });
+    const newGalleryItem = new Gallery({ image: imageUrl, category });
     await newGalleryItem.save();
 
     res.status(201).json({
@@ -70,10 +87,14 @@ const getGalleryById = async (req, res) => {
 const updateGallery = async (req, res) => {
   try {
     const { id } = req.params;
-    const { image } = req.body;
+    const { image, category } = req.body;
 
     if (!image) {
       return res.status(400).json({ message: "Image is required" });
+    }
+
+    if (!category || !allowedCategories.includes(category)) {
+      return res.status(400).json({ message: "Invalid or missing category" });
     }
 
     // Upload new image if it's a data URL
@@ -87,7 +108,7 @@ const updateGallery = async (req, res) => {
 
     const updatedGalleryItem = await Gallery.findByIdAndUpdate(
       id,
-      { image: imageUrl },
+      { image: imageUrl, category },
       { new: true }
     );
 
