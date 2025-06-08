@@ -1,17 +1,14 @@
 const { cloudinary } = require("../config/cloudinary");
 const Gallery = require("../models/Gallery.model");
 
-// Allowed categories
+// Allowed categories based on updated schema
 const allowedCategories = [
-  "Apps",
-  "Website",
-  "Softwares",
-  "Logo",
-  "Google ads",
-  "InstaAds",
-  "Facebook ads",
-  "Seo",
-  "Other digital marketing services",
+  "All Images",
+  "Works",
+  "Meetings",
+  "Celebrations",
+  "Our Success",
+  "Our Branches",
 ];
 
 // Create a new gallery item
@@ -27,7 +24,7 @@ const createGallery = async (req, res) => {
       return res.status(400).json({ message: "Invalid or missing category" });
     }
 
-    // Upload image to Cloudinary
+    // Upload image to Cloudinary if it's base64
     let imageUrl = image;
     if (image.startsWith("data:")) {
       const result = await cloudinary.uploader.upload(image, {
@@ -36,7 +33,6 @@ const createGallery = async (req, res) => {
       imageUrl = result.secure_url;
     }
 
-    // Create new gallery item
     const newGalleryItem = new Gallery({ image: imageUrl, category });
     await newGalleryItem.save();
 
@@ -53,7 +49,7 @@ const createGallery = async (req, res) => {
 // Get all gallery items
 const getAllGalleryItems = async (req, res) => {
   try {
-    const galleryItems = await Gallery.find();
+    const galleryItems = await Gallery.find().sort({ _id: -1 });
 
     if (!galleryItems.length) {
       return res.status(404).json({ message: "No gallery items found" });
@@ -97,7 +93,7 @@ const updateGallery = async (req, res) => {
       return res.status(400).json({ message: "Invalid or missing category" });
     }
 
-    // Upload new image if it's a data URL
+    // Upload new image if it's base64
     let imageUrl = image;
     if (image.startsWith("data:")) {
       const result = await cloudinary.uploader.upload(image, {

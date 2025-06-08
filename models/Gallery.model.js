@@ -1,20 +1,20 @@
 const mongoose = require("mongoose");
 
 const GallerySchema = new mongoose.Schema({
-  image: { type: String, required: true }, // Image URL
+  image: {
+    type: String,
+    required: true, // URL or path to the image
+  },
   category: {
     type: String,
     required: true,
     enum: [
-      "Apps",
-      "Website",
-      "Softwares",
-      "Logo",
-      "GoogleAds",
-      "InstaAds",
-      "Facebook ads",
-      "Seo",
-      "Other digital marketing services",
+      "All Images",
+      "Works",
+      "Meetings",
+      "Celebrations",
+      "Our Success",
+      "Our Branches",
     ],
   },
 });
